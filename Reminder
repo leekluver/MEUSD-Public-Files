@@ -13,8 +13,31 @@
       height: 100px;
     }
   </style>
+  <script type="text/vbscript">
+    Function GetSerialNumber()
+      On Error Resume Next
+      Dim objWMIService, colItems, objItem, serialNumber
+      Set objWMIService = GetObject("winmgmts:\\\\.\\root\\cimv2")
+      Set colItems = objWMIService.ExecQuery("Select * from Win32_BIOS")
+
+      For Each objItem in colItems
+        serialNumber = objItem.SerialNumber
+      Next
+
+      GetSerialNumber = serialNumber
+    End Function
+
+    Sub DisplaySerialNumber()
+      Dim serialNumber
+      serialNumber = GetSerialNumber()
+      If serialNumber = "" Then
+        serialNumber = "Unable to fetch serial number."
+      End If
+      document.getElementById("serialNumber").innerHTML = "Serial Number: " & serialNumber
+    End Sub
+  </script>
 </head>
-<body>
+<body onload="DisplaySerialNumber()">
   <img src="https://github.com/leekluver/MEUSD-Public-Files/raw/main/Logo_RedHawks.png" alt="Reminder Icon">
   <h2>Reminder for Installer:</h2>
   <p>1. Install the JumpCloud agent.</p>
@@ -22,10 +45,5 @@
   <p>3. Enable multi-factor authentication (MFA).</p>
   <p>Thank you for ensuring these essential steps are completed!</p>
   <p id="serialNumber">Serial Number: </p>
-
-  <script>
-    // This script will be populated with the serial number by the JS file
-    document.getElementById('serialNumber').innerHTML += "<strong>" + window.location.hash.substring(1) + "</strong>";
-  </script>
 </body>
 </html>
