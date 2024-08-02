@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Installation Reminder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://github.com/leekluver/MEUSD-Public-Files/raw/main/Logo_RedHawks.png" alt="Reminder Icon">
+  <h2>Reminder for Installer:</h2>
+  <p>1. Install the JumpCloud agent.</p>
+  <p>2. Add the device to the Windows group.</p>
+  <p>3. Enable multi-factor authentication (MFA).</p>
+  <p>Thank you for ensuring these essential steps are completed!</p>
+  <p id="serialNumber">Serial Number: </p>
+
+  <script>
+    // This script will be populated with the serial number by the JS file
+    document.getElementById('serialNumber').innerHTML += "<strong>" + window.location.hash.substring(1) + "</strong>";
+  </script>
+</body>
+</html>
