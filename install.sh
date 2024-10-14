@@ -552,14 +552,17 @@ mkdir -p "$TEMP_DIR"
 
 # Function to check if the system is online
 is_online() {
-    # Ping Google's DNS (8.8.8.8) and MEUSD DNS (10.0.0.5)
-    # Success if at least one of the servers responds
-    if ping -c 3 -i 2 -q 8.8.8.8 &> /dev/null || ping -c 3 -i 2 -q 10.0.0.5 &> /dev/null; then
+    # Ping Google's DNS (8.8.8.8) and MEUSD DNS (10.0.0.1)
+    # Wait longer before deciding it's offline
+    
+    # Perform 5 ping attempts with a 5-second interval and 10-second timeout per ping
+    if ping -c 5 -i 5 -W 10 -q 8.8.8.8 &> /dev/null || ping -c 5 -i 5 -W 10 -q 10.0.0.1 &> /dev/null; then
         return 0  # System is online if at least one server responds
     else
         return 1  # System is offline if neither server responds
     fi
 }
+
 
 # Function to create an offline mode image
 create_offline_image() {
@@ -853,16 +856,16 @@ modify_pam_sshd() {
 
 
 # Reboot system
-reboot_system() {
-    echo "Installation complete. The system needs to reboot."
-    read -p "Do you want to reboot now? [Y/n] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        reboot
-    else
-        echo "Please reboot the system manually to apply all changes."
-    fi
-}
+#reboot_system() {
+#    echo "Installation complete. The system needs to reboot."
+#    read -p "Do you want to reboot now? [Y/n] " -n 1 -r
+#    echo
+#    if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+#        reboot
+#    else
+#        echo "Please reboot the system manually to apply all changes."
+#    fi
+#}
 
 modify_config_txt() {
     CONFIG_FILE="/boot/firmware/config.txt"
@@ -883,19 +886,6 @@ modify_config_txt() {
         echo "dtoverlay=vc4-kms-v3d is not present or already commented."
     fi
 }
-
-# Reboot system
-reboot_system() {
-    echo "Changes made to config.txt. The system needs to reboot."
-    read -p "Do you want to reboot now? [Y/n] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        sudo reboot
-    else
-        echo "Please reboot the system manually to apply all changes."
-    fi
-}
-
 
 # Main installation function
 main() {
@@ -923,7 +913,8 @@ main() {
 	echo "Running download_and_convert.sh script for initial setup..."
     sudo -u $USERNAME /opt/PiSlides/download_and_convert.sh
 	
-    reboot_system
+   # reboot_system
+    sudo reboot
 }
 
 main
